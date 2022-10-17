@@ -34,3 +34,34 @@ function deleteFreet(fields) {
     .then(showResponse)
     .catch(showResponse);
 }
+
+function createCollection(fields) {
+  fetch('/api/collections', {method: 'POST', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+  .then(showResponse)
+  .then(showResponse);
+}
+
+function deleteCollection(fields) {
+  fetch('/api/collections', {method: 'DELETE', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+  .then(showResponse)
+  .then(showResponse);
+}
+
+function updateCollection(fields) {
+  fetch('/api/collections', {method: 'PUT', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+  .then(showResponse)
+  .then(showResponse);
+}
+
+function findCollections(fields){
+  console.log('here');
+  fetch('/api/collections/all', {method: 'GET', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+  .then(showResponse)
+  .then(showResponse);
+}
+
+function findByName(fields){ 
+  fetch('/api/collections', {method: 'GET', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+  .then(showResponse)
+  .then(showResponse);
+}
