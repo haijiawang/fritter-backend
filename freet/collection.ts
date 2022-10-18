@@ -25,7 +25,8 @@ class FreetCollection {
       authorId,
       dateCreated: date,
       content,
-      dateModified: date
+      dateModified: date,
+      collectionId: ''
     });
     await freet.save(); // Saves freet to MongoDB
     return freet.populate('authorId');
@@ -96,6 +97,14 @@ class FreetCollection {
   static async deleteMany(authorId: Types.ObjectId | string): Promise<void> {
     await FreetModel.deleteMany({authorId});
   }
+
+  // save freet to collection 
+  static async saveFreetToCollection(collectionId: string, freetId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
+    const freet = await FreetModel.findOne({_id: freetId});
+    freet.collectionId = collectionId;
+    await freet.save();
+    return freet.populate('authorId');
+}
 }
 
 export default FreetCollection;

@@ -48,7 +48,6 @@ function deleteCollection(fields) {
 }
 
 function updateCollection(fields) {
-  console.log(JSON.stringify(fields));
   fetch(`/api/collections/${fields.id}`, {method: 'PUT', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
     .then(showResponse)
     .catch(showResponse);
@@ -64,4 +63,10 @@ function findByName(fields){
   fetch(`/api/collections?collectionId=${fields.id}`,)
   .then(showResponse)
   .then(showResponse);
+}
+
+function saveFreet(fields){
+  fetch(`/api/freets/save/${fields.freetId}/${fields.collectionId}`, {method: 'PUT', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+    .then(showResponse)
+    .catch(showResponse);
 }

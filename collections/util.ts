@@ -5,7 +5,6 @@ type CollectionDOResponse = {
     _id: Types.ObjectId;
     userId: Types.ObjectId;
     name: string;
-    freets: [Types.ObjectId];
 }
 
 const constructCollectionDOResponse = (collectionDO: HydratedDocument<CollectionDO>): CollectionDOResponse => {
@@ -13,7 +12,6 @@ const constructCollectionDOResponse = (collectionDO: HydratedDocument<Collection
         _id: collectionDO._id,
         userId: collectionDO.userId,
         name: collectionDO.name,
-        freets: collectionDO.freets
     };
 }
 

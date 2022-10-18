@@ -43,7 +43,8 @@ const formsAndHandlers = {
   'delete-collection': deleteCollection,
   'update-collection': updateCollection, 
   'find-collections': findCollections, 
-  'find-by-name': findByName
+  'find-by-name': findByName,
+  'save-freet': saveFreet
 };
 
 // Attach handlers to forms

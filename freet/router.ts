@@ -131,4 +131,19 @@ router.put(
   }
 );
 
+router.put(
+  '/save/:freetId?/:collectionId?',
+  [
+      userValidator.isUserLoggedIn,
+  ],
+  async (req: Request, res: Response) => {
+      const freet = await FreetCollection.saveFreetToCollection(req.params.collectionId, req.params.freetId);
+      res.status(200).json({
+          message: 'Your freet was saved successfully to the collection.',
+          collection: util.constructFreetResponse(freet)
+      });
+  }
+  // TO-DO: add middleware and check that freet ID is valid
+)
+
 export {router as freetRouter};

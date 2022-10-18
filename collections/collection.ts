@@ -7,7 +7,6 @@ class CollectionDOCollection {
         const collection = new CollectionDOModel({
             userId: userId, 
             name, 
-            freets: []
         })
         await collection.save();
         return collection.populate('name')
