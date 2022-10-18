@@ -3,9 +3,10 @@ import CollectionDOModel, { CollectionDO } from "./model";
 
 class CollectionDOCollection {
     // creates a new collection and saves to db
-    static async addOne(name: string) : Promise<HydratedDocument<CollectionDO>> {
+    static async addOne(userId: Types.ObjectId | string, name: string) : Promise<HydratedDocument<CollectionDO>> {
         const collection = new CollectionDOModel({
-            name: name, 
+            userId: userId, 
+            name, 
             freets: []
         })
         await collection.save();

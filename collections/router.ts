@@ -1,7 +1,8 @@
-import type {NextFunction, Request, Response} from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import CollectionDOCollection from './collection';
 import express from 'express';
 import * as userValidator from '../user/middleware';
+import * as util from './util';
 
 const router = express.Router();
 
@@ -12,12 +13,13 @@ router.post(
     ],
     async (req: Request, res: Response) => {
         const name = (req.body.name as string) ?? '';
-        console.log(req)
-        const collectionDO = await CollectionDOCollection.addOne(name);
-
+        const userId = (req.session.userId as string) ?? '';
+        const collectionDO = await CollectionDOCollection.addOne(userId, name);
+        
         res.status(201).json({
             message: 'Your collection was created successfully.',
-          });
+            freet: util.constructCollectionDOResponse(collectionDO)
+        });
         // TODO: add construct collection response
         // TODO: ADD ERROR HADNDLING
     }
@@ -34,7 +36,7 @@ router.delete(
 
         res.status(201).json({
             message: 'Your collection was deleted successfully.',
-          });
+        });
         // TODO: add construct collection response
         // TODO: ADD ERROR HADNDLING
     }
@@ -53,7 +55,7 @@ router.put(
 
         res.status(201).json({
             message: 'Your collection name was changed successfully.',
-          });
+        });
         // TODO: add construct collection response
         // TODO: ADD ERROR HADNDLING
     }
@@ -66,13 +68,10 @@ router.get(
         userValidator.isUserLoggedIn,
     ],
     async (req: Request, res: Response) => {
-        const collectionDO = await CollectionDOCollection.findAll();
+        const allCollections = await CollectionDOCollection.findAll();
 
-        res.status(201).json({
-            message: 'Your collection name was changed successfully.',
-          });
-        // TODO: add construct collection response
-        // TODO: ADD ERROR HADNDLING
+        const response = allCollections.map(util.constructCollectionDOResponse);
+        res.status(200).json(response);
     }
 )
 
@@ -83,15 +82,11 @@ router.get(
         userValidator.isUserLoggedIn,
     ],
     async (req: Request, res: Response) => {
-        const name = (req.body.name as string) ?? '';
-        const collectionDO = await CollectionDOCollection.findByName(name);
+        const allCollections = await CollectionDOCollection.findByName(req.query.collectionName as string);
 
-        res.status(201).json({
-            message: 'Your collection name was changed successfully.',
-          });
-        // TODO: add construct collection response
-        // TODO: ADD ERROR HADNDLING
+        const response = allCollections.map(util.constructCollectionDOResponse);
+        res.status(200).json(response);
     }
 )
 
-export {router as collectionDORouter}
+export { router as collectionDORouter }

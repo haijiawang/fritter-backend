@@ -54,14 +54,14 @@ function updateCollection(fields) {
 }
 
 function findCollections(fields){
-  console.log('here');
-  fetch('/api/collections/all', {method: 'GET', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+  fetch('/api/collections/all')
   .then(showResponse)
   .then(showResponse);
 }
 
 function findByName(fields){ 
-  fetch('/api/collections', {method: 'GET', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+  console.log('here');
+  fetch(`/api/collections?collectionName=${fields.name}`,)
   .then(showResponse)
   .then(showResponse);
 }
