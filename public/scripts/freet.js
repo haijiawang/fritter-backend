@@ -42,15 +42,16 @@ function createCollection(fields) {
 }
 
 function deleteCollection(fields) {
-  fetch('/api/collections', {method: 'DELETE', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+  fetch(`/api/collections/${fields.id}`, {method: 'DELETE', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
   .then(showResponse)
   .then(showResponse);
 }
 
 function updateCollection(fields) {
-  fetch('/api/collections', {method: 'PUT', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
-  .then(showResponse)
-  .then(showResponse);
+  console.log(JSON.stringify(fields));
+  fetch(`/api/collections/${fields.id}`, {method: 'PUT', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+    .then(showResponse)
+    .catch(showResponse);
 }
 
 function findCollections(fields){
@@ -60,8 +61,7 @@ function findCollections(fields){
 }
 
 function findByName(fields){ 
-  console.log('here');
-  fetch(`/api/collections?collectionName=${fields.name}`,)
+  fetch(`/api/collections?collectionId=${fields.id}`,)
   .then(showResponse)
   .then(showResponse);
 }

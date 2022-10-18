@@ -14,14 +14,14 @@ class CollectionDOCollection {
     }
 
     // delete collection with the given name
-    static async deleteOne(name: string) : Promise<boolean> {
-        const collection = await CollectionDOModel.deleteOne({name: name});
+    static async deleteOne(id: Types.ObjectId | string) : Promise<boolean> {
+        const collection = await CollectionDOModel.deleteOne({_id: id});
         return collection !== null;
     }
 
     // update the collection name to new name 
-    static async updateOne(name: string, newName: string) : Promise<boolean> {
-        const collection = await CollectionDOModel.findOne({name: name});
+    static async updateOne(collectionId: Types.ObjectId | string, newName: string) : Promise<HydratedDocument<CollectionDO>>{
+        const collection = await CollectionDOModel.findOne({_id: collectionId});
         collection.name = newName;
         await collection.save();
         return collection.populate('name');
@@ -33,8 +33,8 @@ class CollectionDOCollection {
     }
 
     // get all Freets
-    static async findByName(name: string): Promise<Array<HydratedDocument<CollectionDO>>> {
-        return CollectionDOModel.find({name: name}).populate('name');
+    static async findById(id: Types.ObjectId | string): Promise<Array<HydratedDocument<CollectionDO>>> {
+        return CollectionDOModel.find({_id: id}).populate('name');
     }
 }
 

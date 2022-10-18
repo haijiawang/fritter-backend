@@ -130,23 +130,23 @@
         <form id="delete-collection">
           <h3>Delete Collection</h3>
           <div>
-            <label for="name">Name:</label>
-            <input id="name" name="name">
+            <label for="id">ID:</label>
+            <input id="id" name="id">
           </div>
           <input type="submit" value="Delete Collection">
         </form>
 
         <form id="update-collection">
-          <h3>Update Collection Name</h3>
+          <h3>Edit Collection Name</h3>
+          <div>
+            <label for="id">ID:</label>
+            <input id="id" name="id">
+          </div>
           <div>
             <label for="name">Name:</label>
             <input id="name" name="name">
           </div>
-          <div>
-            <label for="newName">New Name:</label>
-            <input id="newName" name="newName">
-          </div>
-          <input type="submit" value="Update Collection">
+          <input type="submit" value="Edit Collection Name">
         </form>
 
         <form id="find-collections">
@@ -155,10 +155,10 @@
         </form>
 
         <form id="find-by-name">
-          <h3>Get Collection By Name</h3>
+          <h3>Get Collection (by ID)</h3>
           <div>
-            <label for="name">Name:</label>
-            <input id="name" name="name">
+            <label for="id">ID:</label>
+            <input id="id" name="id">
           </div>
           <input type="submit" value="Get Collection By Name">
         </form>
