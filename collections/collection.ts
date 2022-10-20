@@ -33,7 +33,7 @@ class CollectionDOCollection {
 
     // get all Freets
     static async findById(id: Types.ObjectId | string): Promise<Array<HydratedDocument<CollectionDO>>> {
-        return CollectionDOModel.find({_id: id}).populate('name');
+        return CollectionDOModel.find({userId: id}).populate('name');
     }
 }
 
