@@ -146,4 +146,19 @@ router.put(
   // TO-DO: add middleware and check that freet ID is valid
 )
 
+router.put(
+  '/remove/:freetId?/:collectionId?',
+  [
+      userValidator.isUserLoggedIn,
+  ],
+  async (req: Request, res: Response) => {
+      const freet = await FreetCollection.removeFreetFromCollection(req.params.collectionId, req.params.freetId);
+      res.status(200).json({
+          message: 'Your freet was remove successfully from the collection.',
+          collection: util.constructFreetResponse(freet)
+      });
+  }
+  // TO-DO: add middleware and check that freet ID is valid
+)
+
 export {router as freetRouter};

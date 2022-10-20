@@ -70,3 +70,9 @@ function saveFreet(fields){
     .then(showResponse)
     .catch(showResponse);
 }
+
+function deleteFromCollection(fields){
+  fetch(`/api/freets/remove/${fields.freetId}/${fields.collectionId}`, {method: 'PUT', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+    .then(showResponse)
+    .catch(showResponse);
+}

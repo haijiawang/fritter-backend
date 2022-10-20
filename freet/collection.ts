@@ -105,6 +105,14 @@ class FreetCollection {
     await freet.save();
     return freet.populate('authorId');
 }
+
+  // remove freet from collection 
+  static async removeFreetFromCollection(collectionId: string, freetId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
+    const freet = await FreetModel.findOne({_id: freetId});
+    freet.collectionId = '';
+    await freet.save();
+    return freet.populate('authorId');
+}
 }
 
 export default FreetCollection;
