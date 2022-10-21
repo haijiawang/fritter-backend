@@ -1,4 +1,4 @@
-import type {Types} from 'mongoose';
+import { Types} from 'mongoose';
 import {Schema, model} from 'mongoose';
 
 /**
@@ -12,6 +12,7 @@ export type User = {
   username: string;
   password: string;
   dateJoined: Date;
+  communities: Array<string>;
 };
 
 // Mongoose schema definition for interfacing with a MongoDB table
@@ -32,6 +33,9 @@ const UserSchema = new Schema({
   dateJoined: {
     type: Date,
     required: true
+  }, 
+  communities: {
+    type: [String]
   }
 });
 
