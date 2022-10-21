@@ -65,9 +65,22 @@ router.post(
     userValidator.isUserLoggedIn,
     freetValidator.isValidFreetContent
   ],
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response, next: NextFunction) => {
+    if (req.query.communityId !== undefined){
+      next(); 
+      return;
+    }
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
     const freet = await FreetCollection.addOne(userId, req.body.content);
+
+    res.status(201).json({
+      message: 'Your freet was created successfully.',
+      freet: util.constructFreetResponse(freet)
+    });
+  },
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    const freet = await FreetCollection.addForum(userId, req.body.content, req.query.communityId as string);
 
     res.status(201).json({
       message: 'Your freet was created successfully.',

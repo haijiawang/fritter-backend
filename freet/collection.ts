@@ -2,6 +2,7 @@ import type {HydratedDocument, Types} from 'mongoose';
 import type {Freet} from './model';
 import FreetModel from './model';
 import UserCollection from '../user/collection';
+import CommunityModel from '../communities/model';
 
 /**
  * This files contains a class that has the functionality to explore freets
@@ -113,6 +114,26 @@ class FreetCollection {
     await freet.save();
     return freet.populate('authorId');
 }
+  // write a forum post in community 
+  static async addForum(authorId: Types.ObjectId | string, content: string, communityId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
+  const date = new Date();
+  const freet = new FreetModel({
+    authorId,
+    dateCreated: date,
+    content,
+    dateModified: date,
+    collectionId: '',
+    communityId
+  });
+  await freet.save(); // Saves freet to MongoDB
+  const freetId = freet._id;
+
+  // also need to save freet in community
+  const community = await CommunityModel.findOne({_id: communityId});
+  community.freets.push(freetId.toString());
+  await community.save();
+  return freet.populate('authorId');
+  }
 }
 
 export default FreetCollection;
