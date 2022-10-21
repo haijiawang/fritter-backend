@@ -82,3 +82,15 @@ function createCommunity(fields){
   .then(showResponse)
   .catch(showResponse);
 }
+
+function deleteCommunity(fields){ 
+  fetch(`/api/communities/${fields.id}`, {method: 'DELETE', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+  .then(showResponse)
+  .catch(showResponse);
+}
+
+function updateCommunity(fields){
+  fetch(`/api/communities/${fields.id}`, {method: 'PUT', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+    .then(showResponse)
+    .catch(showResponse);
+}

@@ -46,7 +46,9 @@ const formsAndHandlers = {
   'find-by-name': findByName,
   'save-freet': saveFreet,
   'remove-freet': deleteFromCollection.apply,
-  'create-community': createCommunity
+  'create-community': createCommunity, 
+  'delete-community': deleteCommunity, 
+  'update-community': updateCommunity
 };
 
 // Attach handlers to forms

@@ -12,7 +12,7 @@ class CollectionDOCollection {
         return collection.populate('name')
     }
 
-    // delete collection with the given name
+    // delete collection with the given ID
     static async deleteOne(id: Types.ObjectId | string) : Promise<boolean> {
         const collection = await CollectionDOModel.deleteOne({_id: id});
         return collection !== null;
