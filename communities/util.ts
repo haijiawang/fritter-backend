@@ -7,6 +7,7 @@ type CommunityResponse = {
     owners: Array<string>
     users: Array<string>;
     freets: Array<string>;
+    public: boolean
 }
 
 const constructCommunityResponse = (community: HydratedDocument<Community>): CommunityResponse => {
@@ -15,7 +16,8 @@ const constructCommunityResponse = (community: HydratedDocument<Community>): Com
         name: community.name, 
         owners: community.owners,
         users: community.users, 
-        freets: community.freets
+        freets: community.freets,
+        public: community.public
     };
 }
 

@@ -11,7 +11,8 @@ export type Community = {
     name: string, 
     users: Array<string>, 
     owners: Array<string>,
-    freets: Array<string>
+    freets: Array<string>,
+    public: boolean
 }
 
 const CommunitySchema = new Schema<Community>({
@@ -26,6 +27,9 @@ const CommunitySchema = new Schema<Community>({
     },
     freets: {
         type: [String]
+    }, 
+    public: {
+        type: Schema.Types.Boolean
     }
 })
 
