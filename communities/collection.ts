@@ -13,7 +13,7 @@ class CommunityCollection{
 
         const user = await UserModel.findOne({_id: userId}); 
         user.communities.push(community._id.toString()); 
-        
+
         await user.save();
         await community.save();
         return community.populate('name')
@@ -56,6 +56,9 @@ class CommunityCollection{
             return false;
         }
         // join community 
+        if (community.users.includes(userId.toString())){
+            return false;
+        }
         community.users.push(userId.toString()); 
 
         const user = await UserModel.findOne({_id: userId}); 
@@ -63,6 +66,26 @@ class CommunityCollection{
         await community.save();
         await user.save(); 
         return community !== null && user !== null;
+    }
+
+    // remove a user from the part of the community 
+    static async deleteMember(communityId: Types.ObjectId | string, userId: Types.ObjectId | string) : Promise<HydratedDocument<Community>>{
+        const community = await CommunityModel.findOne({_id: communityId});
+        
+        // join community 
+        let communityUsers = community.users; 
+        communityUsers = communityUsers.filter(user => user !== userId); 
+        community.users = communityUsers; 
+
+        // remove community from users too 
+        const user = await UserModel.findOne({_id: userId}); 
+        let userCommunities = user.communities; 
+        userCommunities = userCommunities.filter(community => community !== communityId); 
+        user.communities = userCommunities; 
+        
+        await community.save();
+        await user.save(); 
+        return community;
     }
 }
 

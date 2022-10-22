@@ -107,6 +107,12 @@ function joinCommunity(fields){
     .catch(showResponse);
 }
 
+function leaveCommunity(fields){
+  fetch(`/api/communities/${fields.communityId}/member/${fields.userId}`, {method: 'DELETE', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+    .then(showResponse)
+    .catch(showResponse);
+}
+
 function makePublic(fields){
   fetch(`/api/communities/public/${fields.id}`, {method: 'PUT', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
     .then(showResponse)

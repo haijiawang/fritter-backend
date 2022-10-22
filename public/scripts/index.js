@@ -51,6 +51,7 @@ const formsAndHandlers = {
   'delete-community': deleteCommunity, 
   'update-community': updateCommunity, 
   'join-community': joinCommunity, 
+  'leave-community': leaveCommunity,
   'make-public': makePublic,
   'make-private': makePrivate,
 };

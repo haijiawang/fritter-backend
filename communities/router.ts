@@ -50,7 +50,7 @@ router.put(
         const community = await CommunityCollection.updateOne(req.params.communityId, req.body.name);
         res.status(200).json({
             message: 'Your community name was changed successfully.',
-            collection: util.constructCommunityResponse(community)
+            community: util.constructCommunityResponse(community)
         });
     }
 )
@@ -64,7 +64,7 @@ router.put(
         const community = await CommunityCollection.makePublic(req.params.id);
         res.status(200).json({
             message: 'You successfully changed your community to be public.',
-            collection: util.constructCommunityResponse(community)
+            community: util.constructCommunityResponse(community)
         });
     }
 )
@@ -78,7 +78,7 @@ router.put(
         const community = await CommunityCollection.makePrivate(req.params.id);
         res.status(200).json({
             message: 'You successfully changed your community to be private.',
-            collection: util.constructCommunityResponse(community)
+            community: util.constructCommunityResponse(community)
         });
     }
 )
@@ -92,12 +92,27 @@ router.put(
         const community = await CommunityCollection.addMember(req.params.communityId, req.params.userId);
         if (community == false){ 
             res.status(401).json({
-                message: 'This community is not public. You do not have permission to join the community.'
+                message: 'You were not able to join the community. You may already be in the community or the community may be private.'
             });
             return; 
         }
         res.status(200).json({
             message: 'You have successfully joined the community.',
+        });
+    }
+)
+
+router.delete(
+    '/:communityId?/member/:userId?',
+    [
+        userValidator.isUserLoggedIn,
+    ],
+    async (req: Request, res: Response) => {
+        const community = await CommunityCollection.deleteMember(req.params.communityId, req.params.userId);
+
+        res.status(200).json({
+            message: 'You have successfully left the community.',
+            community: util.constructCommunityResponse(community)
         });
     }
 )
