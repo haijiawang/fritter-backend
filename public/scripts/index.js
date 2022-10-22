@@ -49,7 +49,10 @@ const formsAndHandlers = {
   'remove-freet': deleteFromCollection.apply,
   'create-community': createCommunity, 
   'delete-community': deleteCommunity, 
-  'update-community': updateCommunity
+  'update-community': updateCommunity, 
+  'join-community': joinCommunity, 
+  'make-public': makePublic,
+  'make-private': makePrivate,
 };
 
 // Attach handlers to forms

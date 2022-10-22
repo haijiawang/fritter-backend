@@ -1,4 +1,5 @@
 import { HydratedDocument, Types } from "mongoose";
+import UserModel from "../user/model";
 import CommunityModel, { Community }  from "./model";
 
 class CommunityCollection{
@@ -7,7 +8,13 @@ class CommunityCollection{
         const community = new CommunityModel({
             owners: [userId], 
             name: name,
+            public: false,
         })
+
+        const user = await UserModel.findOne({_id: userId}); 
+        user.communities.push(community._id.toString()); 
+        
+        await user.save();
         await community.save();
         return community.populate('name')
     }
@@ -24,6 +31,38 @@ class CommunityCollection{
         community.name = newName;
         await community.save();
         return community.populate('name');
+    }
+
+    // make the community public
+    static async makePublic(communityId: Types.ObjectId | string) : Promise<HydratedDocument<Community>>{
+        const community = await CommunityModel.findOne({_id: communityId});
+        community.public = true;
+        await community.save();
+        return community.populate('name');
+    }
+
+    // make the community private
+    static async makePrivate(communityId: Types.ObjectId | string) : Promise<HydratedDocument<Community>>{
+        const community = await CommunityModel.findOne({_id: communityId});
+        community.public = false;
+        await community.save();
+        return community.populate('name');
+    }
+
+    // add another user a member of specified community  
+    static async addMember(communityId: Types.ObjectId | string, userId: Types.ObjectId | string) : Promise<boolean>{
+        const community = await CommunityModel.findOne({_id: communityId});
+        if (community.public == false){
+            return false;
+        }
+        // join community 
+        community.users.push(userId.toString()); 
+
+        const user = await UserModel.findOne({_id: userId}); 
+        user.communities.push(communityId.toString()); 
+        await community.save();
+        await user.save(); 
+        return community !== null && user !== null;
     }
 }
 
