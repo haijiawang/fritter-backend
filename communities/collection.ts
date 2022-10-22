@@ -71,7 +71,7 @@ class CommunityCollection{
     // remove a user from the part of the community 
     static async deleteMember(communityId: Types.ObjectId | string, userId: Types.ObjectId | string) : Promise<HydratedDocument<Community>>{
         const community = await CommunityModel.findOne({_id: communityId});
-        
+
         // join community 
         let communityUsers = community.users; 
         communityUsers = communityUsers.filter(user => user !== userId); 
