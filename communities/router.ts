@@ -136,5 +136,20 @@ router.put(
     }
 )
 
+router.delete(
+    '/:communityId?/owner/:userId?',
+    [
+        userValidator.isUserLoggedIn,
+    ],
+    async (req: Request, res: Response) => {
+        const community = await CommunityCollection.deleteOwner(req.params.communityId, req.params.userId);
+
+        res.status(200).json({
+            message: 'You have successfully left the community as owner.',
+            community: util.constructCommunityResponse(community)
+        });
+    }
+)
+
 
 export { router as communityRouter }

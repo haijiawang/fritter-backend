@@ -130,3 +130,9 @@ function addOwner(fields){
     .then(showResponse)
     .catch(showResponse);
 }
+
+function deleteOwner(fields){
+  fetch(`/api/communities/${fields.communityId}/owner/${fields.userId}`, {method: 'DELETE', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+    .then(showResponse)
+    .catch(showResponse);
+}

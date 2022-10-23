@@ -54,7 +54,8 @@ const formsAndHandlers = {
   'leave-community': leaveCommunity,
   'make-public': makePublic,
   'make-private': makePrivate,
-  'add-owner': addOwner
+  'add-owner': addOwner, 
+  'delete-owner': deleteOwner
 };
 
 // Attach handlers to forms

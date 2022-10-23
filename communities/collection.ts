@@ -73,12 +73,12 @@ class CommunityCollection{
     static async deleteMember(communityId: Types.ObjectId | string, userId: Types.ObjectId | string) : Promise<HydratedDocument<Community>>{
         const community = await CommunityModel.findOne({_id: communityId});
 
-        // join community 
+        // remove from community data 
         let communityUsers = community.users; 
         communityUsers = communityUsers.filter(user => user !== userId); 
         community.users = communityUsers; 
 
-        // remove community from users too 
+        // remove from user data
         const user = await UserModel.findOne({_id: userId}); 
         let userCommunities = user.communities; 
         userCommunities = userCommunities.filter(community => community !== communityId); 
@@ -109,6 +109,26 @@ class CommunityCollection{
         user.communities.push(communityId.toString()); 
         await user.save(); 
         return community !== null && user !== null;
+    }
+
+    // remove a user as an owner of the community
+    static async deleteOwner(communityId: Types.ObjectId | string, userId: Types.ObjectId | string) : Promise<HydratedDocument<Community>>{
+        const community = await CommunityModel.findOne({_id: communityId});
+
+        // remove from community data
+        let communityOwners = community.owners; 
+        communityOwners = communityOwners.filter(user => user !== userId); 
+        community.owners = communityOwners; 
+
+        // remove from user data 
+        const user = await UserModel.findOne({_id: userId}); 
+        let userCommunities = user.communities; 
+        userCommunities = userCommunities.filter(community => community !== communityId); 
+        user.communities = userCommunities; 
+        
+        await community.save();
+        await user.save(); 
+        return community;
     }
 }
 
