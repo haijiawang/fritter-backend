@@ -124,3 +124,9 @@ function makePrivate(fields){
     .then(showResponse)
     .catch(showResponse);
 }
+
+function addOwner(fields){
+  fetch(`/api/communities/${fields.communityId}/owner/${fields.userId}`, {method: 'PUT', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+    .then(showResponse)
+    .catch(showResponse);
+}

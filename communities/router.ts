@@ -117,4 +117,24 @@ router.delete(
     }
 )
 
+router.put(
+    '/:communityId?/owner/:userId?',
+    [
+        userValidator.isUserLoggedIn,
+    ],
+    async (req: Request, res: Response) => {
+        const community = await CommunityCollection.addOwner(req.params.communityId, req.params.userId);
+        if (community == false){ 
+            res.status(401).json({
+                message: 'You were not able to join the community. You may already be in the community or the community may be private.'
+            });
+            return; 
+        }
+        res.status(200).json({
+            message: 'You are now an owner of the community.',
+        });
+    }
+)
+
+
 export { router as communityRouter }

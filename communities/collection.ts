@@ -7,6 +7,7 @@ class CommunityCollection{
     static async addOne(userId: Types.ObjectId | string, name: string) : Promise<HydratedDocument<Community>> {
         const community = new CommunityModel({
             owners: [userId], 
+            users: [userId],
             name: name,
             public: false,
         })
@@ -86,6 +87,28 @@ class CommunityCollection{
         await community.save();
         await user.save(); 
         return community;
+    }
+
+    // add another user a owner of specified community  
+    static async addOwner(communityId: Types.ObjectId | string, userId: Types.ObjectId | string) : Promise<boolean>{
+        const community = await CommunityModel.findOne({_id: communityId});
+        if (community.public == false){
+            return false;
+        }
+        // join community 
+        if (community.owners.includes(userId.toString())){
+            return false;
+        }
+        community.owners.push(userId.toString()); 
+        await community.save();
+
+        const user = await UserModel.findOne({_id: userId}); 
+        if (user.communities.includes(communityId.toString())){
+            return community !== null && user !== null;;
+        }
+        user.communities.push(communityId.toString()); 
+        await user.save(); 
+        return community !== null && user !== null;
     }
 }
 
