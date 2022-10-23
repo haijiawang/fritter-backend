@@ -130,6 +130,11 @@ class CommunityCollection{
         await user.save(); 
         return community;
     }
+
+    static async findByUser(userId: Types.ObjectId | string) : Promise<Array<string>>{
+        const user = await UserModel.findOne({_id: userId}); 
+        return user.communities; 
+    }
 }
 
 export default CommunityCollection

@@ -136,3 +136,9 @@ function deleteOwner(fields){
     .then(showResponse)
     .catch(showResponse);
 }
+
+function getCommunities(fields){ 
+  fetch(`/api/communities?userId=${fields.id}`,)
+  .then(showResponse)
+  .then(showResponse);
+}

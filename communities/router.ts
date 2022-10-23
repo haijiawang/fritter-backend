@@ -5,20 +5,20 @@ import * as userValidator from '../user/middleware';
 import * as util from './util';
 import * as collectionValidator from '../collections/middleware';
 
-const router = express.Router(); 
+const router = express.Router();
 
 router.post(
     '/',
     [
         userValidator.isUserLoggedIn,
-    ], 
+    ],
     async (req: Request, res: Response) => {
         const name = (req.body.name as string) ?? ''
-        const userId = (req.session.userId as string) ?? ''; 
+        const userId = (req.session.userId as string) ?? '';
         const community = await CommunityCollection.addOne(userId, name);
-        
+
         res.status(201).json({
-            message: 'Your community was created successfully.', 
+            message: 'Your community was created successfully.',
             collection: util.constructCommunityResponse(community)
         });
         // TODO: ADD MIDDLEWARE CHECKS FOR INVALID NAMES
@@ -90,11 +90,11 @@ router.put(
     ],
     async (req: Request, res: Response) => {
         const community = await CommunityCollection.addMember(req.params.communityId, req.params.userId);
-        if (community == false){ 
+        if (community == false) {
             res.status(401).json({
                 message: 'You were not able to join the community. You may already be in the community or the community may be private.'
             });
-            return; 
+            return;
         }
         res.status(200).json({
             message: 'You have successfully joined the community.',
@@ -124,11 +124,11 @@ router.put(
     ],
     async (req: Request, res: Response) => {
         const community = await CommunityCollection.addOwner(req.params.communityId, req.params.userId);
-        if (community == false){ 
+        if (community == false) {
             res.status(401).json({
                 message: 'You were not able to join the community. You may already be in the community or the community may be private.'
             });
-            return; 
+            return;
         }
         res.status(200).json({
             message: 'You are now an owner of the community.',
@@ -150,6 +150,21 @@ router.delete(
         });
     }
 )
+
+router.get(
+    '/',
+    [
+        userValidator.isUserLoggedIn,
+    ],
+    async (req: Request, res: Response) => {
+        console.log(req.query.userId);
+        const userCommunities = await CommunityCollection.findByUser(req.query.userId as string);
+        res.status(200).json({
+            message: 'You have successfully found all communities you are a part of.',
+            communities: userCommunities
+        });
+    }
+);
 
 
 export { router as communityRouter }

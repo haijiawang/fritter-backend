@@ -55,7 +55,8 @@ const formsAndHandlers = {
   'make-public': makePublic,
   'make-private': makePrivate,
   'add-owner': addOwner, 
-  'delete-owner': deleteOwner
+  'delete-owner': deleteOwner, 
+  'get-communities': getCommunities, 
 };
 
 // Attach handlers to forms
