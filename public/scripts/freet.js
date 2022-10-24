@@ -66,7 +66,7 @@ function findCollections(fields){
 }
 
 function findByName(fields){ 
-  fetch(`/api/collections?collectionId=${fields.id}`,)
+  fetch(`/api/collections?userId=${fields.id}`,)
   .then(showResponse)
   .then(showResponse);
 }

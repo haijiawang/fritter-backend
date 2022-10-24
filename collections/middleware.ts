@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import express from 'express';
 import { Types } from 'mongoose';
+import UserModel from '../user/model';
 import CollectionDOModel from './model';
 
 const router = express.Router();
@@ -34,7 +35,7 @@ const isValidName = (req: Request, res: Response, next: NextFunction) => {
 };
 
 /**
-* Checks if a freet with freetId is req.params exists
+* Checks if a collection exists
 */
 const isCollectionExists = async (req: Request, res: Response, next: NextFunction) => {
   const collection = await CollectionDOModel.findOne({ _id: req.params.collectionId });
@@ -49,8 +50,43 @@ const isCollectionExists = async (req: Request, res: Response, next: NextFunctio
   next();
 };
 
+// checks if an owner exists
+const ownerExists = async (req: Request, res: Response, next: NextFunction) => {
+  const user = await UserModel.findOne({ _id: req.query.userId });
+  if (!user) {
+    res.status(404).json({
+      error: {
+        userNotFound: `User with ID ${req.query.userId} does not exist.`
+      }
+    });
+    return;
+  }
+  next();
+};
+
+/**
+ * Checks if collection name is valid
+ */
+const isValidCollectionName = (req: Request, res: Response, next: NextFunction) => {
+  const { content } = req.body as { content: string };
+  if (!content) {
+    res.status(400).json({
+      error: 'Collection name must be at least one character long.'
+    });
+    return;
+  }
+  if (!content.trim()) {
+    res.status(400).json({
+      error: 'Collection name must be at least one character long.'
+    });
+    return;
+  }
+  next();
+};
 
 export {
-  isValidName, 
-  isCollectionExists
+  isValidName,
+  isCollectionExists,
+  isValidCollectionName, 
+  ownerExists
 }; 
