@@ -1,9 +1,10 @@
-import type {NextFunction, Request, Response} from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import express from 'express';
 import FreetCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as freetValidator from '../freet/middleware';
 import * as util from './util';
+import * as collectionValidator from '../collections/middleware';
 
 const router = express.Router();
 
@@ -66,8 +67,8 @@ router.post(
     freetValidator.isValidFreetContent
   ],
   async (req: Request, res: Response, next: NextFunction) => {
-    if (req.query.communityId !== undefined){
-      next(); 
+    if (req.query.communityId !== undefined) {
+      next();
       return;
     }
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
@@ -144,34 +145,52 @@ router.put(
   }
 );
 
+/**
+ * Save a Freet to a Collection
+ * 
+ * @throws {403} - if the user is not logged in or not the author of
+ *                 of the freet
+ * @throws {404} - If the freetId is not valid
+ * @throws {404} - If the collectionId is not valid 
+ */
 router.put(
   '/save/:freetId?/:collectionId?',
   [
-      userValidator.isUserLoggedIn,
+    userValidator.isUserLoggedIn,
+    freetValidator.isFreetExists,
+    collectionValidator.isCollectionExists
   ],
   async (req: Request, res: Response) => {
-      const freet = await FreetCollection.saveFreetToCollection(req.params.collectionId, req.params.freetId);
-      res.status(200).json({
-          message: 'Your freet was saved successfully to the collection.',
-          collection: util.constructFreetResponse(freet)
-      });
+    const freet = await FreetCollection.saveFreetToCollection(req.params.collectionId, req.params.freetId);
+    res.status(200).json({
+      message: 'Your freet was saved successfully to the collection.',
+      collection: util.constructFreetResponse(freet)
+    });
   }
-  // TO-DO: add middleware and check that freet ID is valid
 )
 
+/**
+ * Save a Freet to a Collection
+ * 
+ * @throws {403} - if the user is not logged in or not the author of
+ *                 of the freet
+ * @throws {404} - If the freetId is not valid
+ * @throws {404} - If the collectionId is not valid 
+ */
 router.put(
   '/remove/:freetId?/:collectionId?',
   [
-      userValidator.isUserLoggedIn,
+    userValidator.isUserLoggedIn,
+    freetValidator.isFreetExists,
+    collectionValidator.isCollectionExists
   ],
   async (req: Request, res: Response) => {
-      const freet = await FreetCollection.removeFreetFromCollection(req.params.collectionId, req.params.freetId);
-      res.status(200).json({
-          message: 'Your freet was remove successfully from the collection.',
-          collection: util.constructFreetResponse(freet)
-      });
+    const freet = await FreetCollection.removeFreetFromCollection(req.params.collectionId, req.params.freetId);
+    res.status(200).json({
+      message: 'Your freet was remove successfully from the collection.',
+      collection: util.constructFreetResponse(freet)
+    });
   }
-  // TO-DO: add middleware and check that freet ID is valid
 )
 
-export {router as freetRouter};
+export { router as freetRouter };
