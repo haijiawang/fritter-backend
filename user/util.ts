@@ -8,6 +8,7 @@ type UserResponse = {
   username: string;
   dateJoined: string;
   communities: Array<string>;
+  following: Array<string>; 
 };
 
 /**
@@ -37,7 +38,8 @@ const constructUserResponse = (user: HydratedDocument<User>): UserResponse => {
     ...userCopy,
     _id: userCopy._id.toString(),
     dateJoined: formatDate(user.dateJoined), 
-    communities: user.communities
+    communities: user.communities, 
+    following: user.following
   };
 };
 

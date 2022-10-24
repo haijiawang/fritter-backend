@@ -142,3 +142,40 @@ function getCommunities(fields){
   .then(showResponse)
   .then(showResponse);
 }
+
+function getFollowingFeed(fields){
+  fetch(`/api/feed/user/${fields.id}/following`)
+    .then(showResponse)
+    .catch(showResponse);
+}
+
+function getRecommendedFeed(fields){
+  fetch(`/api/feed/user/${fields.id}/recommended`)
+    .then(showResponse)
+    .catch(showResponse);
+}
+
+function getCommunityFeed(fields){
+  fetch(`/api/feed/community/${fields.id}`)
+    .then(showResponse)
+    .catch(showResponse);
+}
+
+function getFollowing(fields){
+  fetch(`/api/feed/${fields.id}`)
+    .then(showResponse)
+    .catch(showResponse);
+}
+
+function followUser(fields){
+  console.log(fields); 
+  fetch(`/api/feed/follow/${fields.id}`, {method: 'PUT', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+    .then(showResponse)
+    .catch(showResponse);
+}
+
+function unfollowUser(fields){ 
+  fetch(`/api/feed/unfollow/${fields.id}`, {method: 'PUT', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+    .then(showResponse)
+    .catch(showResponse);
+}

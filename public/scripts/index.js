@@ -57,6 +57,12 @@ const formsAndHandlers = {
   'add-owner': addOwner, 
   'delete-owner': deleteOwner, 
   'get-communities': getCommunities, 
+  'get-following-feed': getFollowingFeed, 
+  'follow-user': followUser, 
+  'unfollow-user': unfollowUser,
+  'get-following': getFollowing, 
+  'get-recommended-feed': getRecommendedFeed, 
+  'get-community-feed': getCommunityFeed, 
 };
 
 // Attach handlers to forms

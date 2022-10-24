@@ -102,6 +102,20 @@ router.put(
     }
 )
 
+// save freet to a community
+router.put(
+    '/:communityId?/freet/:freetId?',
+    [
+        userValidator.isUserLoggedIn,
+    ],
+    async (req: Request, res: Response) => {
+        const community = await CommunityCollection.addFreet(req.params.communityId, req.params.freetId);
+        res.status(200).json({
+            message: 'You added freet to the community',
+        });
+    }
+)
+
 router.delete(
     '/:communityId?/member/:userId?',
     [

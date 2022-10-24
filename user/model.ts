@@ -13,6 +13,7 @@ export type User = {
   password: string;
   dateJoined: Date;
   communities: Array<string>;
+  following: Array<string>; 
 };
 
 // Mongoose schema definition for interfacing with a MongoDB table
@@ -35,6 +36,9 @@ const UserSchema = new Schema({
     required: true
   }, 
   communities: {
+    type: [String]
+  }, 
+  following: {
     type: [String]
   }
 });
