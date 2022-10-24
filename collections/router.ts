@@ -8,8 +8,7 @@ import * as collectionValidator from '../collections/middleware';
 const router = express.Router();
 
 /**
- * @throws {403} - if the user is not logged in or not the author of
- *                 of the freet
+ * @throws {403} - if the user is not logged in
  * @throws {400} - If the collection name is invalid
  */
 router.post(
@@ -31,15 +30,14 @@ router.post(
 )
 
 /**
- * @throws {403} - if the user is not logged in or not the author of
- *                 of the freet
+ * @throws {403} - if the user is not logged in
  * @throws {404} - if the collection does not exist 
  */
 router.delete(
     '/:collectionId?',
     [
         userValidator.isUserLoggedIn,
-        collectionValidator.isCollectionExists, 
+        collectionValidator.isCollectionExists,
     ],
     async (req: Request, res: Response) => {
         await CollectionDOCollection.deleteOne(req.params.collectionId);
@@ -60,7 +58,7 @@ router.put(
     '/:collectionId?',
     [
         userValidator.isUserLoggedIn,
-        collectionValidator.isCollectionExists, 
+        collectionValidator.isCollectionExists,
         collectionValidator.isValidCollectionName
     ],
     async (req: Request, res: Response) => {

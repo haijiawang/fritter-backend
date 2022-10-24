@@ -4,13 +4,19 @@ import express from 'express';
 import * as userValidator from '../user/middleware';
 import * as util from './util';
 import * as collectionValidator from '../collections/middleware';
-
+import * as communityValidator from './middleware';
+import * as freetValidator from '../freet/middleware'
 const router = express.Router();
 
+/**
+ * @throws {403} - if the user is not logged in 
+ * @throws {400} - If the community name is invalid
+ */
 router.post(
     '/',
     [
         userValidator.isUserLoggedIn,
+        communityValidator.isValidCommunityName
     ],
     async (req: Request, res: Response) => {
         const name = (req.body.name as string) ?? ''
@@ -21,14 +27,20 @@ router.post(
             message: 'Your community was created successfully.',
             collection: util.constructCommunityResponse(community)
         });
-        // TODO: ADD MIDDLEWARE CHECKS FOR INVALID NAMES
     }
 )
 
+/**
+ * @throws {403} - if the user is not logged in 
+ * @throws {404} - if the community does not exist 
+ * @throws {401} - if the user is not authorized as owner
+ */
 router.delete(
     '/:communityId?',
     [
         userValidator.isUserLoggedIn,
+        communityValidator.isCommunityExists,
+        communityValidator.isCommunityOwner
     ],
     async (req: Request, res: Response) => {
         await CommunityCollection.deleteOne(req.params.communityId);
@@ -40,11 +52,19 @@ router.delete(
     }
 )
 
+/**
+ * @throws {403} - if the user is not logged in 
+ * @throws {400} - If the community name is invalid
+ * @throws {404} - if the community does not exist 
+ * @throws {401} - if the user is not authorized as owner
+ */
 router.put(
     '/:communityId?',
     [
         userValidator.isUserLoggedIn,
-        collectionValidator.isValidName
+        communityValidator.isValidCommunityName,
+        communityValidator.isCommunityExists,
+        communityValidator.isCommunityOwner
     ],
     async (req: Request, res: Response) => {
         const community = await CommunityCollection.updateOne(req.params.communityId, req.body.name);
@@ -55,13 +75,20 @@ router.put(
     }
 )
 
+/**
+ * @throws {403} - if the user is not logged in 
+ * @throws {404} - if the community does not exist 
+ * @throws {401} - if the user is not authorized as owner
+ */
 router.put(
-    '/public/:id',
+    '/public/:communityId',
     [
         userValidator.isUserLoggedIn,
+        communityValidator.isCommunityExists,
+        communityValidator.isCommunityOwner
     ],
     async (req: Request, res: Response) => {
-        const community = await CommunityCollection.makePublic(req.params.id);
+        const community = await CommunityCollection.makePublic(req.params.communityId);
         res.status(200).json({
             message: 'You successfully changed your community to be public.',
             community: util.constructCommunityResponse(community)
@@ -69,13 +96,20 @@ router.put(
     }
 )
 
+/**
+ * @throws {403} - if the user is not logged in 
+ * @throws {404} - if the community does not exist 
+ * @throws {401} - if the user is not authorized as owner
+ */
 router.put(
-    '/private/:id',
+    '/private/:communityId',
     [
         userValidator.isUserLoggedIn,
+        communityValidator.isCommunityExists,
+        communityValidator.isCommunityOwner,
     ],
     async (req: Request, res: Response) => {
-        const community = await CommunityCollection.makePrivate(req.params.id);
+        const community = await CommunityCollection.makePrivate(req.params.communityId);
         res.status(200).json({
             message: 'You successfully changed your community to be private.',
             community: util.constructCommunityResponse(community)
@@ -83,10 +117,17 @@ router.put(
     }
 )
 
+/**
+ * @throws {403} - if the user is not logged in 
+ * @throws {404} - if the community does not exist 
+ * @throws {403} - if the user already exists in the community
+ */
 router.put(
     '/:communityId?/member/:userId?',
     [
         userValidator.isUserLoggedIn,
+        communityValidator.isCommunityExists,
+        communityValidator.isNotInCommunity
     ],
     async (req: Request, res: Response) => {
         const community = await CommunityCollection.addMember(req.params.communityId, req.params.userId);
@@ -102,11 +143,17 @@ router.put(
     }
 )
 
+/**
+ * @throws {403} - if the user is not logged in 
+ * @throws {404} - if the community/freet does not exist 
+ */
 // save freet to a community
 router.put(
     '/:communityId?/freet/:freetId?',
     [
         userValidator.isUserLoggedIn,
+        freetValidator.isFreetExists,
+        communityValidator.isCommunityExists,
     ],
     async (req: Request, res: Response) => {
         const community = await CommunityCollection.addFreet(req.params.communityId, req.params.freetId);
@@ -116,10 +163,15 @@ router.put(
     }
 )
 
+/**
+ * @throws {403} - if the user is not logged in 
+ * @throws {404} - if the community does not exist 
+ */
 router.delete(
     '/:communityId?/member/:userId?',
     [
         userValidator.isUserLoggedIn,
+        communityValidator.isCommunityExists
     ],
     async (req: Request, res: Response) => {
         const community = await CommunityCollection.deleteMember(req.params.communityId, req.params.userId);
@@ -131,10 +183,17 @@ router.delete(
     }
 )
 
+/**
+ * @throws {403} - if the user is not logged in 
+ * @throws {404} - if the community does not exist 
+ * @throws {403} - if the user already exists in the community
+ */
 router.put(
     '/:communityId?/owner/:userId?',
     [
         userValidator.isUserLoggedIn,
+        communityValidator.isCommunityExists,
+        communityValidator.isNotInCommunity
     ],
     async (req: Request, res: Response) => {
         const community = await CommunityCollection.addOwner(req.params.communityId, req.params.userId);
@@ -150,10 +209,15 @@ router.put(
     }
 )
 
+/**
+ * @throws {403} - if the user is not logged in 
+ * @throws {404} - if the community does not exist 
+ */
 router.delete(
     '/:communityId?/owner/:userId?',
     [
         userValidator.isUserLoggedIn,
+        communityValidator.isCommunityExists
     ],
     async (req: Request, res: Response) => {
         const community = await CommunityCollection.deleteOwner(req.params.communityId, req.params.userId);
