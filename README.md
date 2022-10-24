@@ -71,6 +71,36 @@ This renders the `index.html` file that will be used to interact with the backen
 - `400` if the new freet content is empty or a stream of empty spaces
 - `413` if the new freet content is more than 140 characters long
 
+#### `PUT /api/freets/save/:freetId?/:collectionId?` - Save a Freet to a Collection
+
+**Body**
+
+
+**Returns**
+
+- A success message
+- An object with the updated freet
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the freetId/colletionId is invalid
+
+#### `PUT /api/freets/remove/:freetId?/:collectionId?` - Remove a Freet from a Collection
+
+**Body**
+
+
+**Returns**
+
+- A success message
+- An object with the updated freet
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the freetId/colletionId is invalid
+
 #### `POST /api/users/session` - Sign in user
 
 **Body**
@@ -161,9 +191,9 @@ ________________________________________________________________________________
 **Throws**
 
 - `403` if the user is not logged in
-- `400` If the name is empty or already exists
+- `400` If the name is empty/invalid
 
-#### `DELETE /api/collections` - Delete an existing collection
+#### `DELETE /api/collections/:collectionId?` - Delete an existing collection
 
 **Returns**
 
@@ -174,12 +204,11 @@ ________________________________________________________________________________
 - `403` if the user is not logged in
 - `404` if the collection does not exist
 
-#### `PUT /api/freets/collections` - Update an existing collection name
+#### `PUT /api/freets/collections/:collectionId?` - Update an existing collection name
 
 **Body**
 
-- `name` _{string}_ - The name of the collection that you want to update. 
-- `newName` _{string}_ - The name that you want to change the collection to. 
+- `name` _{string}_ - The new name you want to change to. 
 
 **Returns**
 
@@ -192,34 +221,93 @@ ________________________________________________________________________________
 - `404` if the collection does not exist
 - `400` if the new collection name is empty or invalid
 
-#### `GET /api/collections` - Get all the collections owned by user
+#### `GET /api/collections/all` - Get all the collections in database
 
 **Returns**
 
 - An array of all collections
 
-#### `GET /api/freets?author=USERNAME` - Get freets by author
+#### `GET /api/collections/userId` - Get freets by author
 
 **Body**
 
-- `name` _{string}_ - The name of the collection whose contents you want to fetch.
 
 **Returns**
 
-- An array of freets saved under that collection name. 
+- An array of freets saved by author with userID. 
 
 **Throws**
 
 - `403` if the user is not logged in
-- `404` if the collection does not exist
+- `404` if the userID does not exist
 
 ____________________________________________________________________________________
 
-#### `GET /api/feed` - Get both the following and recommended feed. 
+#### `GET /api/feed/user/:userId?/following` - Get the following feed (feed consisting of posts the user follows) 
+
+**Returns**
+- A success message
+- A list of Freet ID's belonging the the "following" freets. 
+
+**Throws**
+
+- `403` if the user is not logged in
+
+#### `GET /api/feed/user/:userId?/recommended` - Get the recommended feed (feed consisting of posts that are recommended) 
+
+**Returns**
+- A success message
+- A list of Freet ID's belonging in the "recommended" freets. 
+
+**Throws**
+
+- `403` if the user is not logged in
+
+#### `GET /api/feed/community/:communityId?` - Get the community feed (feed consisting of posts that belong in a community) 
+
+**Returns**
+- A success message
+- A list of Freet ID's belonging in the community's forum freets. 
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the community does not exist
+
+#### `GET /api/feed/:userId?` -  Gets the followers of userID
+
+**Returns**
+- A success message
+- A list of ID's belonging to the followers of the user.  
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the user does not exist
+
+#### `PUT /api/feed/follow/:userId?` -  The userID in session follows the userID in the params. 
 
 **Returns**
 
-- An object, mapping 'following' to an array of freets and mapping 'recommended' to array of freets. 
+- A success message
+- The user object 
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the user does not exist
+
+#### `PUT /api/feed/unfollow/:userId?` -  The userID in session unfollows the userID in the params. 
+
+**Returns**
+
+- A success message
+- The user object 
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the user does not exist
 
 ____________________________________________________________________________________
 
@@ -233,35 +321,46 @@ ________________________________________________________________________________
 **Returns**
 
 - A success message
-- A object with the new community
+- An object with the new community
 
 **Throws**
 
 - `403` if the user is not logged in
-- `400` If the name is empty or already exists
+- `400` If the name is empty
 
-#### `DELETE /api/community` - Delete an community
+#### `DELETE /api/community/:communityId?'` - Delete a community
 
-**Body**
-
-- `name` _{string}_ - The name of the community
 
 **Returns**
 
 - A success message
+- An object with the new community
 
 **Throws**
 
 - `403` if the user is not logged in
 - `404` if the community does not exist
+- `401` if the user is not authorized as an owner
 
-#### `PUT /api/community/join` - Update a community to have a new member
+#### `PUT /api/community/:communityId?'` - Update a community name
+
+
+**Returns**
+
+- A success message
+- An object with the new community
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the community does not exist
+- `400` if the community name is invalid
+- `401` if the user is not authorized as an owner
+
+
+#### `PUT /api/community/public/:communityId` - update community to be public
 
 **Body**
-
-- `id` _{user id}_ - The id of the user that wants to join. 
-- `name` _{string}_ - The name of the community. 
-- `role` _{string}_ - The role of the user, either an owner or member. 
 
 **Returns**
 
@@ -272,25 +371,42 @@ ________________________________________________________________________________
 
 - `403` if the user is not logged in
 - `404` if the community does not exist
+- `401` if the user is not authorized as an owner
 
-#### `PUT /api/community/post` - Push a new freet to the community
+#### `PUT /api/community/private/:communityId` - update community to be private
 
 **Body**
 
-- `content` _{string}_ - The content of the freet
-
 **Returns**
 
 - A success message
-- A object with the created freet
+- An object with the updated community
 
 **Throws**
 
 - `403` if the user is not logged in
-- `400` If the freet content is empty or a stream of empty spaces
-- `413` If the freet content is more than 140 characters long
+- `404` if the community does not exist
+- `401` if the user is not authorized as an owner
 
-#### `DELETE /api/community/:freetId?` - Delete an existing freet from community
+#### `PUT /api/community/:communityId?/member/:userId?` - Add a member to the community
+
+**Body**
+
+**Returns**
+
+- A success message
+- An object with the updated community
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the community does not exist
+- `403` if the user already exists in community
+
+
+#### `PUT /api/community/:communityId?/freet/:freetId?` - save a freet to the community
+
+**Body**
 
 **Returns**
 
@@ -299,5 +415,53 @@ ________________________________________________________________________________
 **Throws**
 
 - `403` if the user is not logged in
-- `403` if the user is not the author of the freet
-- `404` if the freetId is invalid
+- `404` if the community/freet does not exist
+
+#### `DELETE /api/community/:communityId?/member/:userId??` - Delete an existing member from community
+
+**Returns**
+
+- A success message
+- A object with the new community
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the community/freet does not exist
+
+#### `PUT /api/community/:communityId?/owner/:userId?` - Add a owner to the community
+
+**Body**
+
+**Returns**
+
+- A success message
+- An object with the updated community
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the community does not exist
+- `403` if the user already exists in community
+
+#### `DELETE /api/community/:communityId?/owner/:userId??` - Delete an existing owner from community
+
+**Returns**
+
+- A success message
+- A object with the new community
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the community/freet does not exist
+
+#### `GET /api/community` - Get all communities
+
+**Returns**
+- A success message
+- A list of all communities
+
+**Throws**
+
+- `403` if the user is not logged in

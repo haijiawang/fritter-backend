@@ -87,7 +87,7 @@ router.get(
 /**
  * @throws {403} - if the user is not logged in or not the author of
  *                 of the freet
- * @throws {404} - if the collection does not exist 
+ * @throws {404} - if the userID does not exist 
  */
 // get collection by ID
 router.get(
